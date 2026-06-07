@@ -227,11 +227,10 @@ export default function Resultaat({ resultaat, input, onNieuw }: ResultaatProps)
             📄 Download indicatie (gratis)
           </button>
           <button
-            disabled
-            className="flex-1 bg-blue-600 opacity-60 text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed"
-            title="Beschikbaar in sprint 4"
+            onClick={downloadRapport}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors"
           >
-            📋 Officieel rapport €9,95
+            📋 Download officieel rapport
           </button>
         </div>
 
