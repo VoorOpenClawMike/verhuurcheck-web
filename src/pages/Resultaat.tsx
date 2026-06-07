@@ -65,6 +65,30 @@ export default function Resultaat({ resultaat, input, onNieuw }: ResultaatProps)
     a.click()
     URL.revokeObjectURL(url)
   }
+  const downloadRapport = async () => {
+    try {
+      const res = await fetch('https://api.floorplangen.jarvisops.online/verhuurcheck/rapport-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postcode: input.postcode,
+          huisnummer: input.huisnummer,
+          huisletter: input.huisletter ?? '',
+          buitenruimte_m2: input.buitenruimte_m2 ?? 0,
+          keuken: input.keuken ?? 'basis',
+          sanitair: input.sanitair ?? 'basis',
+        }),
+      })
+      if (!res.ok) throw new Error('mislukt')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `verhuurcheck-${input.postcode}-${input.huisnummer}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch { alert('PDF downloaden mislukt. Probeer opnieuw.') }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
