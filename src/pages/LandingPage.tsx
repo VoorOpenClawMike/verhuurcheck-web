@@ -1,8 +1,9 @@
 interface LandingPageProps {
   onStart: () => void
+  onPricing: () => void
 }
 
-export default function LandingPage({ onStart }: LandingPageProps) {
+export default function LandingPage({ onStart, onPricing }: LandingPageProps) {
   const faqs = [
     {
       q: 'Wat zijn WWS-punten?',
@@ -31,12 +32,17 @@ export default function LandingPage({ onStart }: LandingPageProps) {
       {/* Navbar */}
       <nav className="bg-navy-900 text-white px-6 py-4 flex items-center justify-between">
         <div className="font-bold text-xl tracking-tight">Verhuurcheck<span className="text-blue-300">.nl</span></div>
-        <button
-          onClick={onStart}
-          className="bg-blue-500 hover:bg-blue-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-        >
-          Bereken gratis
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={onPricing} className="text-blue-200 hover:text-white text-sm font-medium transition-colors">
+            Tarieven
+          </button>
+          <button
+            onClick={onStart}
+            className="bg-blue-500 hover:bg-blue-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+          >
+            Bereken gratis
+          </button>
+        </div>
       </nav>
 
       {/* Hero */}
