@@ -3,9 +3,11 @@ import LandingPage from './pages/LandingPage'
 import Calculator from './pages/Calculator'
 import Resultaat from './pages/Resultaat'
 import PricingPage from './pages/PricingPage'
+import NotFound from './NotFound'
+import CookieBanner from './CookieBanner'
 import type { VerhuurCheckResultaat, VerhuurCheckInput } from './api/verhuurcheck'
 
-export type View = 'home' | 'calculator' | 'resultaat' | 'pricing'
+export type View = 'home' | 'calculator' | 'resultaat' | 'pricing' | 'notFound'
 
 function App() {
   const [view, setView] = useState<View>('home')
@@ -41,6 +43,10 @@ function App() {
       {view === 'pricing' && (
         <PricingPage onNavigate={setView} />
       )}
+      {view === 'notFound' && (
+        <NotFound onHome={() => setView('home')} />
+      )}
+      <CookieBanner />
     </div>
   )
 }
