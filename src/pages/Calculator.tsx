@@ -1,6 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { berekenVerhuurcheck } from '../api/verhuurcheck'
 import type { VerhuurCheckResultaat, VerhuurCheckInput } from '../api/verhuurcheck'
+import {
+  addRecentAdres,
+  listRecenteAdressen,
+  saveDraft,
+  loadDraft,
+  deleteDraft,
+} from '../lib/offlineStore'
+import type { RecentAdres } from '../lib/offlineStore'
+
+const DRAFT_ID = 'calculator-concept'
 
 interface CalculatorProps {
   onResultaat: (res: VerhuurCheckResultaat, inp: VerhuurCheckInput) => void
@@ -17,6 +27,39 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
   const [sanitair, setSanitair] = useState<'basis' | 'luxe'>('basis')
   const [laden, setLaden] = useState(false)
   const [fout, setFout] = useState<string | null>(null)
+  const [recenteAdressen, setRecenteAdressen] = useState<RecentAdres[]>([])
+
+  useEffect(() => {
+    listRecenteAdressen().then(setRecenteAdressen).catch(() => {})
+    // Onderbroken (bijv. offline) sessie hervatten met het bewaarde concept
+    loadDraft(DRAFT_ID)
+      .then((draft) => {
+        if (!draft) return
+        setPostcode(draft.input.postcode)
+        setHuisnummer(draft.input.huisnummer)
+        setHuisletter(draft.input.huisletter ?? '')
+        setBuitenruimte(draft.input.buitenruimte_m2 ?? 0)
+        setKeuken(draft.input.keuken ?? 'basis')
+        setSanitair(draft.input.sanitair ?? 'basis')
+      })
+      .catch(() => {})
+  }, [])
+
+  // Debounced autosave: invoer mag niet verloren gaan bij wegklikken of offline raken
+  useEffect(() => {
+    if (!postcode.trim() && !huisnummer.trim()) return
+    const timer = setTimeout(() => {
+      saveDraft(DRAFT_ID, {
+        postcode,
+        huisnummer,
+        ...(huisletter.trim() ? { huisletter: huisletter.trim() } : {}),
+        buitenruimte_m2: buitenruimte,
+        keuken,
+        sanitair,
+      }).catch(() => {})
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [postcode, huisnummer, huisletter, buitenruimte, keuken, sanitair])
 
   const handleAdresDoorgaan = (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,6 +67,11 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
       setFout('Vul postcode en huisnummer in.')
       return
     }
+    addRecentAdres({
+      postcode: postcode.replace(/\s/g, '').toUpperCase(),
+      huisnummer: huisnummer.trim(),
+      ...(huisletter.trim() ? { huisletter: huisletter.trim() } : {}),
+    }).catch(() => {})
     setFout(null)
     setStap(2)
   }
@@ -42,6 +90,7 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
     }
     try {
       const res = await berekenVerhuurcheck(input)
+      deleteDraft(DRAFT_ID).catch(() => {})
       onResultaat(res, input)
     } catch (err) {
       setFout(err instanceof Error ? err.message : 'Er is een onbekende fout opgetreden.')
@@ -54,7 +103,7 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <nav className="bg-navy-900 text-white px-6 py-4 flex items-center gap-4">
-        <button onClick={onBack} className="text-blue-300 hover:text-white text-sm">← Terug</button>
+        <button onClick={onBack} className="text-blue-300 hover:text-white text-sm min-h-[44px] min-w-[44px] inline-flex items-center">← Terug</button>
         <span className="font-bold text-lg">Verhuurcheck<span className="text-blue-300">.nl</span></span>
       </nav>
 
@@ -113,6 +162,28 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
               </div>
             </div>
 
+            {recenteAdressen.length > 0 && (
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-2">Recent gezocht</p>
+                <div className="flex flex-wrap gap-2">
+                  {recenteAdressen.map((adres) => (
+                    <button
+                      key={adres.id}
+                      type="button"
+                      onClick={() => {
+                        setPostcode(adres.postcode)
+                        setHuisnummer(adres.huisnummer)
+                        setHuisletter(adres.huisletter ?? '')
+                      }}
+                      className="min-h-[44px] px-4 border border-gray-300 rounded-lg text-sm text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors"
+                    >
+                      {adres.id}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {fout && <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">{fout}</p>}
 
             <button
@@ -130,7 +201,7 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
               <h2 className="text-2xl font-bold text-navy-900">Verfijn uw berekening</h2>
               <p className="text-gray-500 text-sm mt-1">
                 Adres: <span className="font-medium text-gray-700">{postcode} {huisnummer}{huisletter}</span>
-                <button type="button" onClick={() => setStap(1)} className="ml-2 text-blue-500 hover:underline text-xs">Wijzigen</button>
+                <button type="button" onClick={() => setStap(1)} className="ml-2 text-blue-500 hover:underline text-xs min-h-[44px] min-w-[44px] -my-3 inline-flex items-center justify-center align-middle">Wijzigen</button>
               </p>
             </div>
 
