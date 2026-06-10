@@ -61,9 +61,15 @@ export default function Calculator({ onResultaat, onBack }: CalculatorProps) {
       <div className="max-w-lg mx-auto px-6 py-12">
         {/* Stap-indicator */}
         <div className="flex items-center gap-3 mb-8">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${stap >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
-          <div className={`flex-1 h-1 rounded ${stap >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`} />
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${stap >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
+          <div className="flex flex-col items-center gap-1">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${stap >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>1</div>
+            <span className="text-xs text-gray-500">Adres</span>
+          </div>
+          <div className={`flex-1 h-1 rounded mb-4 ${stap >= 2 ? 'bg-blue-600' : 'bg-gray-200'}`} />
+          <div className="flex flex-col items-center gap-1">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${stap >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
+            <span className="text-xs text-gray-500">Details</span>
+          </div>
         </div>
 
         {stap === 1 && (
