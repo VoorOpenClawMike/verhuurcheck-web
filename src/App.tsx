@@ -5,6 +5,8 @@ import Resultaat from './pages/Resultaat'
 import PricingPage from './pages/PricingPage'
 import NotFound from './NotFound'
 import CookieBanner from './CookieBanner'
+import OfflineIndicator from './OfflineIndicator'
+import IosInstallBanner from './IosInstallBanner'
 import type { VerhuurCheckResultaat, VerhuurCheckInput } from './api/verhuurcheck'
 
 export type View = 'home' | 'calculator' | 'resultaat' | 'pricing' | 'notFound'
@@ -46,6 +48,8 @@ function App() {
       {view === 'notFound' && (
         <NotFound onHome={() => setView('home')} />
       )}
+      <OfflineIndicator />
+      <IosInstallBanner />
       <CookieBanner />
     </div>
   )

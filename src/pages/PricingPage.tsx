@@ -178,7 +178,7 @@ export default function PricingPage({ onNavigate }: Props) {
               <div className="p-6 pt-0">
                 <button
                   onClick={() => onNavigate('home')}
-                  className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-colors ${tier.ctaStyle}`}
+                  className={`w-full py-2.5 min-h-[44px] rounded-lg font-semibold text-sm transition-colors ${tier.ctaStyle}`}
                 >
                   {tier.cta}
                 </button>
@@ -205,7 +205,7 @@ export default function PricingPage({ onNavigate }: Props) {
         <div className="text-center mt-12">
           <button
             onClick={() => onNavigate('home')}
-            className="text-blue-600 hover:underline text-sm"
+            className="text-blue-600 hover:underline text-sm min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-2"
           >
             ← Terug naar home
           </button>
