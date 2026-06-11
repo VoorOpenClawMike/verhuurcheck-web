@@ -13,6 +13,7 @@ export interface VerhuurCheckResultaat {
   oppervlakte_m2: number | null
   energielabel: string | null
   energielabel_geldig: boolean
+  energie_label_bron: 'ep_online' | 'altum_ai' | 'gebruiker_input' | null
   woz_waarde_eur: number | null
   wws: {
     punten_totaal: number

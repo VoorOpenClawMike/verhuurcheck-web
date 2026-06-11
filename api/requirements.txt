@@ -1,0 +1,6 @@
+fastapi>=0.100.0
+uvicorn>=0.23.0
+mollie-api-python>=4.0.0
+supabase>=2.0.0
+python-multipart>=0.0.9
+httpx>=0.24.0
