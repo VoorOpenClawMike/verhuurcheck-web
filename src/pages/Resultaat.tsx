@@ -94,7 +94,7 @@ export default function Resultaat({ resultaat, input, onNieuw }: ResultaatProps)
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <nav className="bg-[#0f1f52] text-white px-6 py-4 flex items-center gap-4">
-        <button onClick={onNieuw} className="text-blue-300 hover:text-white text-sm">
+        <button onClick={onNieuw} className="text-blue-300 hover:text-white text-sm min-h-[44px] inline-flex items-center">
           ← Nieuwe berekening
         </button>
         <span className="font-bold text-lg">
